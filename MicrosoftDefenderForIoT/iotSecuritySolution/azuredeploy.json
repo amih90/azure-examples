@@ -1,0 +1,103 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "location": {
+            "type": "string",
+            "defaultValue": "[resourceGroup().location]",
+            "metadata": {
+                "description": "Location for all resources."
+            }
+        },
+        "iotHubName": {
+            "type": "string",
+            "metadata": {
+                "description": "IoT Hub resource name."
+            }
+        },
+        "iotHubResourceId": {
+            "type": "string",
+            "metadata": {
+                "description": "IoT Hub resource id."
+            }
+        },
+        "iotSecuritySolutionDisplayName": {
+            "type": "string",
+            "defaultValue": "",
+            "metadata": {
+                "description": "Resource display name."
+            }
+        },
+        "iotSecuritySolutionDisabledDataSources": {
+            "type": "string",
+            "defaultValue": "",
+            "allowedValues": [
+                "",
+                "TwinData"
+            ],
+            "metadata": {
+                "description": "Disabled data sources. Disabling these data sources compromises the system."
+            }
+        },
+        "iotSecuritySolutionExport": {
+            "type": "string",
+            "defaultValue": "RawEvents",
+            "allowedValues": [
+                "",
+                "RawEvents"
+            ],
+            "metadata": {
+                "description": "List of additional options for exporting to workspace data."
+            }
+        },
+        "iotSecuritySolutionStatus": {
+            "type": "string",
+            "defaultValue": "Enabled",
+            "allowedValues": [
+                "Enabled",
+                "Disabled"
+            ],
+            "metadata": {
+                "description": "Status of the IoT Security solution."
+            }
+        },
+        "iotSecuritySolutionUnmaskedIpLoggingStatus": {
+            "type": "string",
+            "defaultValue": "Enabled",
+            "allowedValues": [
+                "Enabled",
+                "Disabled"
+            ],
+            "metadata": {
+                "description": "Unmasked IP address logging status."
+            }
+        },
+        "iotSecuritySolutionWorkspace": {
+            "type": "string",
+            "metadata": {
+                "description": "Workspace resource ID."
+            }
+        }
+    },
+    "variables": {
+        "iotSecuritySolutionDisplayName": "[if(empty(parameters('iotSecuritySolutionDisplayName')), parameters('iotHubName'), parameters('iotSecuritySolutionDisplayName'))]"
+    },
+    "resources": [
+        {
+            "type": "Microsoft.Security/iotSecuritySolutions",
+            "apiVersion": "2019-08-01",
+            "name": "[parameters('iotHubName')]",
+            "location": "[parameters('location')]",
+            "properties": {
+                "additionalWorkspaces": [],
+                "disabledDataSources": "[parameters('iotSecuritySolutionDisabledDataSources')]",
+                "displayName": "[variables('iotSecuritySolutionDisplayName')]",
+                "export": ["[parameters('iotSecuritySolutionExport')]"],
+                "iotHubs": ["[parameters('iotHubResourceId')]"],
+                "status": "[parameters('iotSecuritySolutionStatus')]",
+                "unmaskedIpLoggingStatus": "[parameters('iotSecuritySolutionUnmaskedIpLoggingStatus')]",
+                "workspace": "[parameters('iotSecuritySolutionWorkspace')]"
+            }
+        }
+    ]
+}
