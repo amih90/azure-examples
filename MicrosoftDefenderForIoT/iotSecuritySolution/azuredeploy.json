@@ -15,12 +15,6 @@
                 "description": "IoT Hub resource name."
             }
         },
-        "iotHubResourceId": {
-            "type": "string",
-            "metadata": {
-                "description": "IoT Hub resource id."
-            }
-        },
         "iotSecuritySolutionDisplayName": {
             "type": "string",
             "defaultValue": "",
@@ -84,16 +78,39 @@
     },
     "resources": [
         {
+            "apiVersion": "2022-04-30-preview",
+            "type": "Microsoft.Devices/IotHubs",
+            "name": "[parameters('iotHubName')]",
+            "location": "[parameters('location')]",
+            "properties": {
+                "eventHubEndpoints": {
+                    "events": {
+                        "retentionTimeInDays": 1,
+                        "partitionCount": 4
+                    }
+                }
+            },
+            "sku": {
+                "name": "S1",
+                "capacity": 1
+            }
+        },
+        {
             "type": "Microsoft.Security/iotSecuritySolutions",
             "apiVersion": "2019-08-01",
             "name": "[parameters('iotHubName')]",
             "location": "[parameters('location')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Devices/IotHubs', parameters('iotHubname'))]"
+            ],
             "properties": {
                 "additionalWorkspaces": [],
                 "disabledDataSources": "[parameters('iotSecuritySolutionDisabledDataSources')]",
                 "displayName": "[variables('iotSecuritySolutionDisplayName')]",
                 "export": ["[parameters('iotSecuritySolutionExport')]"],
-                "iotHubs": ["[parameters('iotHubResourceId')]"],
+                "iotHubs": [
+                    "[resourceId('Microsoft.Devices/IotHubs', parameters('iotHubName'))]"
+                ],
                 "status": "[parameters('iotSecuritySolutionStatus')]",
                 "unmaskedIpLoggingStatus": "[parameters('iotSecuritySolutionUnmaskedIpLoggingStatus')]",
                 "workspace": "[parameters('iotSecuritySolutionWorkspace')]"
