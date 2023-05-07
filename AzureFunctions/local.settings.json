@@ -1,0 +1,13 @@
+{
+  "IsEncrypted": false,
+  "Values": {
+    "AzureWebJobsStorage": "UseDevelopmentStorage=true",
+    "FUNCTIONS_WORKER_RUNTIME": "dotnet",
+    "EventHubName": "<eventhub_name>",
+    "EventHubConsumerGroup": "spauth",
+    "EventHubConnection__fullyQualifiedNamespace": "<eventhub_namespace>.servicebus.windows.net",
+    "EventHubConnection__tenantId": "<tenant_id>",
+    "EventHubConnection__clientId": "<client_id>",
+    "EventHubConnection__clientSecret": "<secret>"
+  }
+}
